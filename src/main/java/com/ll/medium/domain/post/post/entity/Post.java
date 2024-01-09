@@ -1,17 +1,27 @@
 package com.ll.medium.domain.post.post.entity;
 
-import com.ll.medium.domain.member.member.entity.Member;
-import com.ll.medium.domain.post.postComment.entity.PostComment;
-import com.ll.medium.domain.post.postLike.entity.PostLike;
-import com.ll.medium.global.jpa.BaseEntity;
-import jakarta.persistence.*;
-import lombok.*;
+import static jakarta.persistence.CascadeType.*;
+import static lombok.AccessLevel.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static jakarta.persistence.CascadeType.ALL;
-import static lombok.AccessLevel.PROTECTED;
+import com.ll.medium.domain.member.member.entity.Member;
+import com.ll.medium.domain.post.postComment.entity.PostComment;
+import com.ll.medium.domain.post.postLike.entity.PostLike;
+import com.ll.medium.global.jpa.BaseEntity;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OrderBy;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @NoArgsConstructor(access = PROTECTED)
@@ -37,6 +47,7 @@ public class Post extends BaseEntity {
     private boolean isPublished;
     @Setter(PROTECTED)
     private long hit;
+    private int minMembershipLevel;
 
     public void increaseHit() {
         hit++;
@@ -48,14 +59,14 @@ public class Post extends BaseEntity {
         }
 
         likes.add(PostLike.builder()
-                .post(this)
-                .member(member)
-                .build());
+            .post(this)
+            .member(member)
+            .build());
     }
 
     public boolean hasLike(Member member) {
         return likes.stream()
-                .anyMatch(postLike -> postLike.getMember().equals(member));
+            .anyMatch(postLike -> postLike.getMember().equals(member));
     }
 
     public void deleteLike(Member member) {
@@ -64,10 +75,10 @@ public class Post extends BaseEntity {
 
     public PostComment writeComment(Member actor, String body) {
         PostComment postComment = PostComment.builder()
-                .post(this)
-                .author(actor)
-                .body(body)
-                .build();
+            .post(this)
+            .author(actor)
+            .body(body)
+            .build();
 
         comments.add(postComment);
 
