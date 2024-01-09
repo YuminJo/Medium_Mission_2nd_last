@@ -1,17 +1,23 @@
 package com.ll.medium.domain.member.member.entity;
 
-import com.ll.medium.global.jpa.BaseEntity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Transient;
-import lombok.*;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import static lombok.AccessLevel.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import static lombok.AccessLevel.PROTECTED;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+
+import com.ll.medium.global.jpa.BaseEntity;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.Transient;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @NoArgsConstructor(access = PROTECTED)
@@ -20,24 +26,29 @@ import static lombok.AccessLevel.PROTECTED;
 @Getter
 @Setter
 public class Member extends BaseEntity {
-    private String username;
-    private String password;
+	private String username;
+	private String password;
+	private int membershipLevel;
 
-    @Transient
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        List<GrantedAuthority> authorities = new ArrayList<>();
+	@Transient
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		List<GrantedAuthority> authorities = new ArrayList<>();
 
-        authorities.add(new SimpleGrantedAuthority("ROLE_MEMBER"));
+		authorities.add(new SimpleGrantedAuthority("ROLE_MEMBER"));
 
-        if (List.of("system", "admin").contains(username)) {
-            authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
-        }
+		if (membershipLevel > 0) {
+			authorities.add(new SimpleGrantedAuthority("ROLE_PAID"));
+		}
 
-        return authorities;
-    }
+		if (List.of("system", "admin").contains(username)) {
+			authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
+		}
 
-    public boolean isAdmin() {
-        return getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
-    }
+		return authorities;
+	}
+
+	public boolean isAdmin() {
+		return getAuthorities().stream()
+			.anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+	}
 }
