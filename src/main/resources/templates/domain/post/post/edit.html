@@ -1,15 +1,15 @@
 <html layout:decorate="~{global/usrLayout}">
 
 <head>
-    <title>글 쓰기</title>
+    <title>글 편집</title>
 </head>
 
 <body>
 <div layout:fragment="content">
-    <h1>글 쓰기</h1>
+    <h1>글 편집</h1>
 
     <script>
-        function submitWriteForm(form) {
+        function submitEditForm(form) {
             form.title.value = form.title.value.trim();
 
             if (form.title.value.length == 0) {
@@ -30,23 +30,29 @@
         }
     </script>
 
-    <form th:action method="POST" onsubmit="submitWriteForm(this); return false;">
+    <form th:action method="POST" onsubmit="submitEditForm(this); return false;">
+        <input type="hidden" name="_method" value="PUT">
+        <div>
+            <label>번호</label>
+            <div th:text="${post.id}"></div>
+        </div>
+
         <div>
             <label>공개</label>
-            <input type="checkbox" name="published">
+            <input type="checkbox" name="published" th:checked="${post.published}">
         </div>
 
         <div>
             <label>제목</label>
-            <input type="text" name="title">
+            <input type="text" name="title" th:value="${post.title}">
         </div>
 
         <div>
             <label>내용</label>
-            <textarea name="body"></textarea>
+            <textarea name="body" th:text="${post.body}"></textarea>
         </div>
 
-        <button type="submit">글쓰기</button>
+        <button type="submit">글 저장</button>
     </form>
 </div>
 </body>

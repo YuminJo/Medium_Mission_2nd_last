@@ -44,7 +44,7 @@ public class Post extends BaseEntity {
     private String title;
     @Column(columnDefinition = "TEXT")
     private String body;
-    private boolean isPublished;
+    private boolean published;
     @Setter(PROTECTED)
     private long hit;
     private int minMembershipLevel;

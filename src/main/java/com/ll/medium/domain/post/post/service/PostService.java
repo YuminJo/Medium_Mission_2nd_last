@@ -17,120 +17,125 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class PostService {
-    private final PostRepository postRepository;
-    private final PostCommentRepository postCommentRepository;
+	private final PostRepository postRepository;
+	private final PostCommentRepository postCommentRepository;
 
-    @Transactional
-    public Post write(Member author, String title, String body, boolean isPublished) {
-        Post post = Post.builder()
-                .author(author)
-                .title(title)
-                .body(body)
-                .isPublished(isPublished)
-                .build();
+	@Transactional
+	public Post write(Member author, String title, String body, boolean published) {
+		Post post = Post.builder()
+			.author(author)
+			.title(title)
+			.body(body)
+			.published(published)
+			.build();
 
-        return postRepository.save(post);
-    }
+		return postRepository.save(post);
+	}
 
-    public Object findTop30ByIsPublishedOrderByIdDesc(boolean isPublished) {
-        return postRepository.findTop30ByIsPublishedOrderByIdDesc(isPublished);
-    }
+	public Object findTop30ByPublishedOrderByIdDesc(boolean published) {
+		return postRepository.findTop30ByPublishedOrderByIdDesc(published);
+	}
 
-    public Optional<Post> findById(long id) {
-        return postRepository.findById(id);
-    }
+	public Optional<Post> findById(long id) {
+		return postRepository.findById(id);
+	}
 
-    public Page<Post> search(String kw, Pageable pageable) {
-        return postRepository.search(true, kw, pageable);
-    }
+	public Page<Post> search(String kw, Pageable pageable) {
+		return postRepository.search(true, kw, pageable);
+	}
 
-    public Page<Post> search(Member author, Boolean isPublished, String kw, Pageable pageable) {
-        return postRepository.search(author, isPublished, kw, pageable);
-    }
+	public Page<Post> search(Member author, Boolean published, String kw, Pageable pageable) {
+		return postRepository.search(author, published, kw, pageable);
+	}
 
-    public boolean canLike(Member actor, Post post) {
-        if (actor == null) return false;
+	public boolean canLike(Member actor, Post post) {
+		if (actor == null) return false;
 
-        return !post.hasLike(actor);
-    }
+		return !post.hasLike(actor);
+	}
 
-    public boolean canCancelLike(Member actor, Post post) {
-        if (actor == null) return false;
+	public boolean canCancelLike(Member actor, Post post) {
+		if (actor == null) return false;
 
-        return post.hasLike(actor);
-    }
+		return post.hasLike(actor);
+	}
 
-    public boolean canModify(Member actor, Post post) {
-        if (actor == null) return false;
+	public boolean canModify(Member actor, Post post) {
+		if (actor == null) return false;
 
-        return actor.equals(post.getAuthor());
-    }
+		return actor.equals(post.getAuthor());
+	}
 
-    public boolean canDelete(Member actor, Post post) {
-        if (actor == null) return false;
+	public boolean canDelete(Member actor, Post post) {
+		if (actor == null) return false;
 
-        if (actor.isAdmin()) return true;
+		if (actor.isAdmin()) return true;
 
-        return actor.equals(post.getAuthor());
-    }
+		return actor.equals(post.getAuthor());
+	}
 
-    @Transactional
-    public void modify(Post post, String title, String body, boolean published) {
-        post.setTitle(title);
-        post.setBody(body);
-        post.setPublished(published);
-    }
+	@Transactional
+	public void edit(Post post, String title, String body, boolean published) {
+		post.setTitle(title);
+		post.setBody(body);
+		post.setPublished(published);
+	}
 
-    @Transactional
-    public void delete(Post post) {
-        postRepository.delete(post);
-    }
+	@Transactional
+	public void delete(Post post) {
+		postRepository.delete(post);
+	}
 
-    @Transactional
-    public void increaseHit(Post post) {
-        post.increaseHit();
-    }
+	@Transactional
+	public void increaseHit(Post post) {
+		post.increaseHit();
+	}
 
-    @Transactional
-    public void like(Member actor, Post post) {
-        post.addLike(actor);
-    }
+	@Transactional
+	public void like(Member actor, Post post) {
+		post.addLike(actor);
+	}
 
-    @Transactional
-    public void cancelLike(Member actor, Post post) {
-        post.deleteLike(actor);
-    }
+	@Transactional
+	public void cancelLike(Member actor, Post post) {
+		post.deleteLike(actor);
+	}
 
-    @Transactional
-    public PostComment writeComment(Member actor, Post post, String body) {
-        return post.writeComment(actor, body);
-    }
+	@Transactional
+	public PostComment writeComment(Member actor, Post post, String body) {
+		return post.writeComment(actor, body);
+	}
 
-    public boolean canModifyComment(Member actor, PostComment comment) {
-        if (actor == null) return false;
+	public boolean canModifyComment(Member actor, PostComment comment) {
+		if (actor == null) return false;
 
-        return actor.equals(comment.getAuthor());
-    }
+		return actor.equals(comment.getAuthor());
+	}
 
-    public boolean canDeleteComment(Member actor, PostComment comment) {
-        if (actor == null) return false;
+	public boolean canDeleteComment(Member actor, PostComment comment) {
+		if (actor == null) return false;
 
-        if (actor.isAdmin()) return true;
+		if (actor.isAdmin()) return true;
 
-        return actor.equals(comment.getAuthor());
-    }
+		return actor.equals(comment.getAuthor());
+	}
 
-    public Optional<PostComment> findCommentById(long id) {
-        return postCommentRepository.findCommentById(id);
-    }
+	public Optional<PostComment> findCommentById(long id) {
+		return postCommentRepository.findCommentById(id);
+	}
 
-    @Transactional
-    public void modifyComment(PostComment postComment, String body) {
-        postComment.setBody(body);
-    }
+	@Transactional
+	public void modifyComment(PostComment postComment, String body) {
+		postComment.setBody(body);
+	}
 
-    @Transactional
-    public void deleteComment(PostComment postComment) {
-        postCommentRepository.delete(postComment);
-    }
+	@Transactional
+	public void deleteComment(PostComment postComment) {
+		postCommentRepository.delete(postComment);
+	}
+
+	public Post findTempOrMake(Member author) {
+		return postRepository.findByAuthorAndPublishedAndTitle(author, false, "임시글")
+			.orElseGet(() -> write(author, "임시글", "", false));
+	}
 }

@@ -1,5 +1,12 @@
 package com.ll.medium.domain.post.post.repository;
 
+import static com.ll.medium.domain.post.post.entity.QPost.*;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.support.PageableExecutionUtils;
+
 import com.ll.medium.domain.member.member.entity.Member;
 import com.ll.medium.domain.post.post.entity.Post;
 import com.querydsl.core.types.Order;
@@ -8,23 +15,18 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.PathBuilder;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.support.PageableExecutionUtils;
 
-import static com.ll.medium.domain.post.post.entity.QPost.post;
+import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class PostRepositoryImpl implements PostRepositoryCustom {
     private final JPAQueryFactory jpaQueryFactory;
 
-    public Page<Post> search(boolean isPublished, String kw, Pageable pageable) {
+    public Page<Post> search(boolean published, String kw, Pageable pageable) {
 
         // 조건 생성
         BooleanExpression condition = post
-                .isPublished.eq(isPublished);
+                .published.eq(published);
 
         if (kw != null && !kw.isBlank()) {
             condition = condition.and(
@@ -57,14 +59,14 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
     }
 
     @Override
-    public Page<Post> search(Member author, Boolean isPublished, String kw, Pageable pageable) {
+    public Page<Post> search(Member author, Boolean published, String kw, Pageable pageable) {
         // 조건 생성
         BooleanExpression condition = post
                 .author.eq(author);
 
-        if (isPublished != null) {
+        if (published != null) {
             condition = condition.and(
-                    post.isPublished.eq(isPublished)
+                    post.published.eq(published)
             );
         }
 
