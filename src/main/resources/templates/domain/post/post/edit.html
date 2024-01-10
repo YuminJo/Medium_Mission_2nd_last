@@ -43,6 +43,14 @@
         </div>
 
         <div>
+            <label>읽기최소레벨</label>
+            <select name="minMembershipLevel" th:value="${post.minMembershipLevel}">
+                <option value="0">0</option>
+                <option value="1">1</option>
+            </select>
+        </div>
+
+        <div>
             <label>제목</label>
             <input type="text" name="title" th:value="${post.title}">
         </div>

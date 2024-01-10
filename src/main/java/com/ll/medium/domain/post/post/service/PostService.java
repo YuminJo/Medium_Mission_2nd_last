@@ -1,17 +1,19 @@
 package com.ll.medium.domain.post.post.service;
 
-import com.ll.medium.domain.member.member.entity.Member;
-import com.ll.medium.domain.post.post.entity.Post;
-import com.ll.medium.domain.post.post.repository.PostRepository;
-import com.ll.medium.domain.post.postComment.entity.PostComment;
-import com.ll.medium.domain.post.postComment.repository.PostCommentRepository;
-import lombok.RequiredArgsConstructor;
+import java.util.Optional;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
+import com.ll.medium.domain.member.member.entity.Member;
+import com.ll.medium.domain.post.post.entity.Post;
+import com.ll.medium.domain.post.post.repository.PostRepository;
+import com.ll.medium.domain.post.postComment.entity.PostComment;
+import com.ll.medium.domain.post.postComment.repository.PostCommentRepository;
+
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -75,10 +77,11 @@ public class PostService {
 	}
 
 	@Transactional
-	public void edit(Post post, String title, String body, boolean published) {
+	public void edit(Post post, String title, String body, boolean published, int minMembershipLevel) {
 		post.setTitle(title);
 		post.setBody(body);
 		post.setPublished(published);
+		post.setMinMembershipLevel(minMembershipLevel);
 	}
 
 	@Transactional

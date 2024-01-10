@@ -108,6 +108,7 @@ public class PostController {
         @NotBlank
         private String body;
         private boolean published;
+        private int minMembershipLevel;
     }
 
     @PreAuthorize("isAuthenticated()")
@@ -117,7 +118,7 @@ public class PostController {
 
         if (!postService.canModify(rq.getMember(), post)) throw new GlobalException("403-1", "권한이 없습니다.");
 
-        postService.edit(post, form.getTitle(), form.getBody(), form.isPublished());
+        postService.edit(post, form.getTitle(), form.getBody(), form.isPublished(),form.getMinMembershipLevel());
 
         return rq.redirect("/post/" + post.getId(), post.getId() + "번 글이 수정되었습니다.");
     }
